@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.0.4.1
+// @version 1.0.4.2
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -35,11 +35,11 @@ let observer = new MutationObserver(e => {
             let date = new Date();
             let blueBet = document.querySelector('.fixed-prediction-button--blue');
             let redBet = document.querySelector('.fixed-prediction-button--pink');
-            let backarrow = document.querySelector('.tw-popover-header__icon-slot--left .ScCoreButton-sc-1qn4ixc-0');
+            // let backarrow = document.querySelector('.tw-popover-header__icon-slot--left .ScCoreButton-sc-1qn4ixc-0');
             if (redBet && blueBet) {
                 console.log('Waiting for intial votes@ '+ date);
                 setTimeout(()=>{claiming = false;}, 5*1000);
-                if(blue==red) {return;}
+                if(blue===red) {return;}
             }
             if (blue>red && redBet) {redBet.click();}
             else if (blueBet && red>blue) {blueBet.click();}
@@ -65,7 +65,7 @@ setInterval(function() {window.location.reload();}, 30*60000);
 
 function converter(value) {
     let last = value.charAt(value.length - 1);
-    if (last == 'K') return parseFloat(value)*1000;
-    else if(last == 'M') return parseFloat(value)*1000000;
+    if (last === 'K') return parseFloat(value)*1000;
+    else if(last === 'M') return parseFloat(value)*1000000;
     else return parseFloat(value);
 }
