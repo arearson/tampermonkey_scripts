@@ -18,26 +18,31 @@ let pointsButton = '[data-test-selector="balance-string"]';
 if (MutationObserver) console.log('Auto betting is enabled.');
 
 let observer = new MutationObserver(e => {
+    claiming = true;
     let dateNow = new Date();
     let curPoints = document.querySelector(pointsButton);
     if (curPoints) {
         curPoints = converter(curPoints.textContent);
         if (curPoints === parseInt('0')) {
+            claiming = false;
             return;
         }
     } else {
+        claiming = false;
         return;
     }
 
     let bonus = document.querySelector(predictButton);
     if (bonus && !claiming) {
         if (bonus.textContent !== 'Predict') {
+            claiming = false;
             return;
         }
         bonus.click();
         let leftValue = document.querySelector('.prediction-summary-stat__value--left');
         let rightValue = document.querySelector('.prediction-summary-stat__value--right');
         if (!leftValue && !rightValue) {
+            claiming = false;
             window.location.reload();
             return false;
         }
@@ -46,8 +51,6 @@ let observer = new MutationObserver(e => {
         console.log(blue, red);
 
         // Betting Controls
-        claiming = true;
-
         let blueBet = document.querySelector('.fixed-prediction-button--blue');
         let redBet = document.querySelector('.fixed-prediction-button--pink');
         if (redBet && blueBet) {
