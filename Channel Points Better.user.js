@@ -39,7 +39,7 @@ let observer = new MutationObserver(e => {
         let rightValue = document.querySelector('.prediction-summary-stat__value--right');
         if (!leftValue && !rightValue) {
             window.location.reload();
-            return;
+            return false;
         }
         let blue = converter(leftValue.textContent);
         let red = converter(rightValue.textContent);
@@ -72,6 +72,7 @@ observer.observe(document.body, {childList: true, subtree: true});
 
 setInterval(function () {
     window.location.reload();
+    return false;
 }, 30 * 60000);
 
 function converter(value) {
@@ -93,6 +94,7 @@ function bettingLogic(red, blue, redBet, blueBet, bonus, curPoints) {
         blueBet.click();
     } else if (bonus.textContent === 'Predict' && curPoints !== parseInt('0')) {
         window.location.reload();
+        return false;
     } else {
         console.log('tits');
     }
