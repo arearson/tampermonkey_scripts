@@ -44,37 +44,23 @@ let observer = new MutationObserver(e => {
         let blue = converter(leftValue.textContent);
         let red = converter(rightValue.textContent);
         console.log(blue, red);
-// Betting Controls
+
+        // Betting Controls
         claiming = true;
 
         let blueBet = document.querySelector('.fixed-prediction-button--blue');
         let redBet = document.querySelector('.fixed-prediction-button--pink');
-        // let backarrow = document.querySelector('.tw-popover-header__icon-slot--left .ScCoreButton-sc-1qn4ixc-0');
         if (redBet && blueBet) {
             console.log('Waiting for initial votes @', dateNow);
             setTimeout(() => {
-                claiming = false;
-            }, 10 * 1000);
-            if (blue === red) {
-                return;
-            }
-        }
-        if (blue > red && redBet) {
-            redBet.click();
-        } else if (blueBet && red > blue) {
-            blueBet.click();
-        } else if (redBet && !blueBet) {
-            redBet.click();
-        } else if (!redBet && blueBet) {
-            blueBet.click();
-        } else if (bonus.textContent === 'Predict' && curPoints !== parseFloat('0')) {
-            window.location.reload();
+                bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+            }, 15 * 1000);
         } else {
-            console.log('tits');
+            bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
         }
-// Hold from spamming the button
+
+        // Hold from spamming the button
         dateNow = new Date();
-        claiming = true;
         setTimeout(() => {
             console.log(curPoints, '@', dateNow);
             claiming = false;
@@ -90,7 +76,24 @@ setInterval(function () {
 
 function converter(value) {
     let last = value.charAt(value.length - 1);
-    if (last === 'K') return parseFloat(value) * 1000;
-    else if (last === 'M') return parseFloat(value) * 1000000;
+    if (last === 'K') return parseFloat(value) * 1000.0;
+    else if (last === 'M') return parseFloat(value) * 1000000.0;
     else return parseFloat(value);
+}
+
+function bettingLogic(red, blue, redBet, blueBet, bonus, curPoints) {
+    if (blue === red) {
+    } else if (blue > red && redBet) {
+        redBet.click();
+    } else if (blueBet && red > blue) {
+        blueBet.click();
+    } else if (redBet && !blueBet) {
+        redBet.click();
+    } else if (!redBet && blueBet) {
+        blueBet.click();
+    } else if (bonus.textContent === 'Predict' && curPoints !== parseFloat('0')) {
+        window.location.reload();
+    } else {
+        console.log('tits');
+    }
 }
