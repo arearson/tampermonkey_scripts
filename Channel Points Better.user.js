@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.0.5.0
+// @version 1.0.5.5
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -18,6 +18,7 @@ let pointsButton = '[data-test-selector="balance-string"]';
 if (MutationObserver) console.log('Auto betting is enabled.');
 
 let observer = new MutationObserver(e => {
+    let dateNow = new Date();
     let curPoints = document.querySelector(pointsButton);
     if (curPoints) {
         curPoints = converter(curPoints.textContent);
@@ -30,51 +31,53 @@ let observer = new MutationObserver(e => {
 
     let bonus = document.querySelector(predictButton);
     if (bonus && !claiming) {
+        if (bonus.textContent !== 'Predict') {
+            return;
+        }
         bonus.click();
         let leftValue = document.querySelector('.prediction-summary-stat__value--left');
         let rightValue = document.querySelector('.prediction-summary-stat__value--right');
-        if (leftValue && rightValue) {
-            let blue = converter(leftValue.textContent);
-            let red = converter(rightValue.textContent);
-            console.log(blue, red);
+        if (!leftValue && !rightValue) {
+            window.location.reload();
+            return;
+        }
+        let blue = converter(leftValue.textContent);
+        let red = converter(rightValue.textContent);
+        console.log(blue, red);
 // Betting Controls
-            claiming = true;
-            let date = new Date();
-            let blueBet = document.querySelector('.fixed-prediction-button--blue');
-            let redBet = document.querySelector('.fixed-prediction-button--pink');
-            // let backarrow = document.querySelector('.tw-popover-header__icon-slot--left .ScCoreButton-sc-1qn4ixc-0');
-            if (redBet && blueBet) {
-                console.log('Waiting for intial votes@ ' + date);
-                setTimeout(() => {
-                    claiming = false;
-                }, 5 * 1000);
-                if (blue === red) {
-                    return;
-                }
-            }
-            if (blue > red && redBet) {
-                redBet.click();
-            } else if (blueBet && red > blue) {
-                blueBet.click();
-            } else if (redBet && !blueBet) {
-                redBet.click();
-            } else if (!redBet && blueBet) {
-                blueBet.click();
-            } else if (bonus.textContent === 'Predict' && curPoints !== parseFloat('0')) {
-                window.location.reload();
-            }
-            // else if (backarrow) {backarrow.click();}
-            else {
-                console.log('tits');
+        claiming = true;
+
+        let blueBet = document.querySelector('.fixed-prediction-button--blue');
+        let redBet = document.querySelector('.fixed-prediction-button--pink');
+        // let backarrow = document.querySelector('.tw-popover-header__icon-slot--left .ScCoreButton-sc-1qn4ixc-0');
+        if (redBet && blueBet) {
+            console.log('Waiting for initial votes @', dateNow);
+            setTimeout(() => {
+                claiming = false;
+            }, 10 * 1000);
+            if (blue === red) {
+                return;
             }
         }
+        if (blue > red && redBet) {
+            redBet.click();
+        } else if (blueBet && red > blue) {
+            blueBet.click();
+        } else if (redBet && !blueBet) {
+            redBet.click();
+        } else if (!redBet && blueBet) {
+            blueBet.click();
+        } else if (bonus.textContent === 'Predict' && curPoints !== parseFloat('0')) {
+            window.location.reload();
+        } else {
+            console.log('tits');
+        }
 // Hold from spamming the button
-        let date = new Date();
+        dateNow = new Date();
         claiming = true;
         setTimeout(() => {
-            console.log(curPoints, 'pts ' + date);
+            console.log(curPoints, '@', dateNow);
             claiming = false;
-            // pointsButton.click();
         }, Math.random() * 1000 + 1000);
     }
 });
