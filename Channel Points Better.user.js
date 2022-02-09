@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.0.4.3
+// @version 1.0.4.4
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -14,14 +14,14 @@
 let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 let claiming = false;
 let button = '[data-test-selector="community-prediction-highlight-header__action-button"]';
-let points = '[data-test-selector="balance-string"]';
+let pointsButton = '[data-test-selector="balance-string"]';
 if (MutationObserver) console.log('Auto betting is enabled.');
 
 let observer = new MutationObserver(e => {
     let bonus = document.querySelector(button);
     if (bonus && !claiming) {
         bonus.click();
-        let curPoints = document.querySelector(points);
+        let curPoints = document.querySelector(pointsButton);
         if (curPoints) {curPoints = converter(curPoints.textContent);}
         else return;
         let leftValue = document.querySelector('.prediction-summary-stat__value--left');
@@ -45,6 +45,7 @@ let observer = new MutationObserver(e => {
             else if (blueBet && red>blue) {blueBet.click();}
             else if (redBet && !blueBet) {redBet.click();}
             else if (!redBet && blueBet) {blueBet.click();}
+            else if (bonus.textContent === 'Predict') {window.location.reload();}
             // else if (backarrow) {backarrow.click();}
             else {console.log('tits');}
         }
@@ -54,7 +55,7 @@ let observer = new MutationObserver(e => {
         setTimeout(() => {
             console.log(curPoints, 'pts '+ date);
             claiming = false;
-            points.click();
+            // pointsButton.click();
         }, Math.random() * 1000 + 1000);
     }
 });
