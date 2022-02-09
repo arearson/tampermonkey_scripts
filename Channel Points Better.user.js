@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.0.5.5
+// @version 1.1.0.1
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -22,7 +22,7 @@ let observer = new MutationObserver(e => {
     let curPoints = document.querySelector(pointsButton);
     if (curPoints) {
         curPoints = converter(curPoints.textContent);
-        if (curPoints === parseFloat('0')) {
+        if (curPoints === parseInt('0')) {
             return;
         }
     } else {
@@ -76,9 +76,9 @@ setInterval(function () {
 
 function converter(value) {
     let last = value.charAt(value.length - 1);
-    if (last === 'K') return parseFloat(value) * 1000.0;
-    else if (last === 'M') return parseFloat(value) * 1000000.0;
-    else return parseFloat(value);
+    if (last === 'K') return (parseFloat(value) * 1000.0).toFixed();
+    else if (last === 'M') return (parseFloat(value) * 1000000.0).toFixed();
+    else return parseInt(value);
 }
 
 function bettingLogic(red, blue, redBet, blueBet, bonus, curPoints) {
@@ -91,7 +91,7 @@ function bettingLogic(red, blue, redBet, blueBet, bonus, curPoints) {
         redBet.click();
     } else if (!redBet && blueBet) {
         blueBet.click();
-    } else if (bonus.textContent === 'Predict' && curPoints !== parseFloat('0')) {
+    } else if (bonus.textContent === 'Predict' && curPoints !== parseInt('0')) {
         window.location.reload();
     } else {
         console.log('tits');
