@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.0.4.4
+// @version 1.0.5.0
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -13,17 +13,24 @@
 
 let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 let claiming = false;
-let button = '[data-test-selector="community-prediction-highlight-header__action-button"]';
+let predictButton = '[data-test-selector="community-prediction-highlight-header__action-button"]';
 let pointsButton = '[data-test-selector="balance-string"]';
 if (MutationObserver) console.log('Auto betting is enabled.');
 
 let observer = new MutationObserver(e => {
-    let bonus = document.querySelector(button);
+    let curPoints = document.querySelector(pointsButton);
+    if (curPoints) {
+        curPoints = converter(curPoints.textContent);
+        if (curPoints === parseFloat('0')) {
+            return;
+        }
+    } else {
+        return;
+    }
+
+    let bonus = document.querySelector(predictButton);
     if (bonus && !claiming) {
         bonus.click();
-        let curPoints = document.querySelector(pointsButton);
-        if (curPoints) {curPoints = converter(curPoints.textContent);}
-        else return;
         let leftValue = document.querySelector('.prediction-summary-stat__value--left');
         let rightValue = document.querySelector('.prediction-summary-stat__value--right');
         if (leftValue && rightValue) {
@@ -37,23 +44,35 @@ let observer = new MutationObserver(e => {
             let redBet = document.querySelector('.fixed-prediction-button--pink');
             // let backarrow = document.querySelector('.tw-popover-header__icon-slot--left .ScCoreButton-sc-1qn4ixc-0');
             if (redBet && blueBet) {
-                console.log('Waiting for intial votes@ '+ date);
-                setTimeout(()=>{claiming = false;}, 5*1000);
-                if(blue===red) {return;}
+                console.log('Waiting for intial votes@ ' + date);
+                setTimeout(() => {
+                    claiming = false;
+                }, 5 * 1000);
+                if (blue === red) {
+                    return;
+                }
             }
-            if (blue>red && redBet) {redBet.click();}
-            else if (blueBet && red>blue) {blueBet.click();}
-            else if (redBet && !blueBet) {redBet.click();}
-            else if (!redBet && blueBet) {blueBet.click();}
-            else if (bonus.textContent === 'Predict') {window.location.reload();}
+            if (blue > red && redBet) {
+                redBet.click();
+            } else if (blueBet && red > blue) {
+                blueBet.click();
+            } else if (redBet && !blueBet) {
+                redBet.click();
+            } else if (!redBet && blueBet) {
+                blueBet.click();
+            } else if (bonus.textContent === 'Predict' && curPoints !== parseFloat('0')) {
+                window.location.reload();
+            }
             // else if (backarrow) {backarrow.click();}
-            else {console.log('tits');}
+            else {
+                console.log('tits');
+            }
         }
 // Hold from spamming the button
         let date = new Date();
         claiming = true;
         setTimeout(() => {
-            console.log(curPoints, 'pts '+ date);
+            console.log(curPoints, 'pts ' + date);
             claiming = false;
             // pointsButton.click();
         }, Math.random() * 1000 + 1000);
@@ -62,11 +81,13 @@ let observer = new MutationObserver(e => {
 
 observer.observe(document.body, {childList: true, subtree: true});
 
-setInterval(function() {window.location.reload();}, 30*60000);
+setInterval(function () {
+    window.location.reload();
+}, 30 * 60000);
 
 function converter(value) {
     let last = value.charAt(value.length - 1);
-    if (last === 'K') return parseFloat(value)*1000;
-    else if(last === 'M') return parseFloat(value)*1000000;
+    if (last === 'K') return parseFloat(value) * 1000;
+    else if (last === 'M') return parseFloat(value) * 1000000;
     else return parseFloat(value);
 }
