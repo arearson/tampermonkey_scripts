@@ -18,22 +18,21 @@ let pointsButton = '[data-test-selector="balance-string"]';
 if (MutationObserver) console.log('Auto betting is enabled.');
 
 let observer = new MutationObserver(e => {
-    claiming = true;
+
     let dateNow = new Date();
     let curPoints = document.querySelector(pointsButton);
     if (curPoints) {
         curPoints = converter(curPoints.textContent);
-        if (curPoints === parseInt('0')) {
-            claiming = false;
+        if (curPoints === 0) {
             return;
         }
     } else {
-        claiming = false;
         return;
     }
 
     let bonus = document.querySelector(predictButton);
     if (bonus && !claiming) {
+        claiming = true;
         if (bonus.textContent !== 'Predict') {
             claiming = false;
             return;
