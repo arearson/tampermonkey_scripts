@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.0.4.2
+// @version 1.0.4.3
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -46,7 +46,7 @@ let observer = new MutationObserver(e => {
             else if (redBet && !blueBet) {redBet.click();}
             else if (!redBet && blueBet) {blueBet.click();}
             // else if (backarrow) {backarrow.click();}
-            else {console.log('tits');points.click();}
+            else {console.log('tits');}
         }
 // Hold from spamming the button
         let date = new Date();
