@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.0.3
+// @version 1.1.1.0
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -17,38 +17,39 @@ let predictButton = '[data-test-selector="community-prediction-highlight-header_
 let pointsButton = '[data-test-selector="balance-string"]';
 if (MutationObserver) console.log('Auto betting is enabled.');
 
-let observer = new MutationObserver(e => {
-
-    let dateNow = new Date();
+let observer = new MutationObserver(() => {
+    observer.disconnect()
     let curPoints = document.querySelector(pointsButton);
     if (curPoints) {
         curPoints = converter(curPoints.textContent);
         if (curPoints === 0) {
+            observer.observe(document.body, {childList: true, subtree: true});
             return;
         }
     } else {
+        observer.observe(document.body, {childList: true, subtree: true});
         return;
     }
 
     let bonus = document.querySelector(predictButton);
     if (bonus && !claiming) {
+
         claiming = true;
         if (bonus.textContent !== 'Predict') {
             claiming = false;
+            observer.observe(document.body, {childList: true, subtree: true});
             return;
         }
         bonus.click();
         let leftValue = document.querySelector('.prediction-summary-stat__value--left');
         let rightValue = document.querySelector('.prediction-summary-stat__value--right');
-        if (!leftValue && !rightValue) {
-            claiming = false;
+        if (!leftValue || !rightValue) {
             window.location.reload();
-            return false;
         }
         let blue = converter(leftValue.textContent);
         let red = converter(rightValue.textContent);
-        console.log(blue, red);
-
+        // console.log(blue, red);
+        let dateNow = new Date();
         // Betting Controls
         let blueBet = document.querySelector('.fixed-prediction-button--blue');
         let redBet = document.querySelector('.fixed-prediction-button--pink');
@@ -62,11 +63,12 @@ let observer = new MutationObserver(e => {
         }
 
         // Hold from spamming the button
-        dateNow = new Date();
         setTimeout(() => {
+            dateNow = new Date();
             console.log(curPoints, '@', dateNow);
             claiming = false;
-        }, Math.random() * 1000);
+            observer.observe(document.body, {childList: true, subtree: true});
+        }, (Math.random() * (.5 - 2) + .5) * 1000);
     }
 });
 
@@ -74,13 +76,12 @@ observer.observe(document.body, {childList: true, subtree: true});
 
 setInterval(function () {
     window.location.reload();
-    return false;
-}, 30 * 60000);
+}, (Math.random() * (30 - 15) + 15) * 60000);
 
 function converter(value) {
     let last = value.charAt(value.length - 1);
-    if (last === 'K') return (parseFloat(value) * 1000.0).toFixed();
-    else if (last === 'M') return (parseFloat(value) * 1000000.0).toFixed();
+    if (last === 'K') return (parseInt(value) * 1000).toFixed();
+    else if (last === 'M') return (parseInt(value) * 1000000).toFixed();
     else return parseInt(value);
 }
 
@@ -94,9 +95,8 @@ function bettingLogic(red, blue, redBet, blueBet, bonus, curPoints) {
         redBet.click();
     } else if (!redBet && blueBet) {
         blueBet.click();
-    } else if (bonus.textContent === 'Predict' && curPoints !== parseInt('0')) {
+    } else if (bonus.textContent === 'Predict' && curPoints !== 0) {
         window.location.reload();
-        return false;
     } else {
         console.log('tits');
     }
