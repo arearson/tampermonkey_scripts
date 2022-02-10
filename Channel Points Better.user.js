@@ -56,7 +56,7 @@ let observer = new MutationObserver(e => {
             console.log('Waiting for initial votes @', dateNow);
             setTimeout(() => {
                 bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
-            }, 15 * 1000);
+            }, 20 * 1000);
         } else {
             bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
         }
@@ -66,7 +66,7 @@ let observer = new MutationObserver(e => {
         setTimeout(() => {
             console.log(curPoints, '@', dateNow);
             claiming = false;
-        }, Math.random() * 1000 + 1000);
+        }, Math.random() * 1000);
     }
 });
 
@@ -101,3 +101,7 @@ function bettingLogic(red, blue, redBet, blueBet, bonus, curPoints) {
         console.log('tits');
     }
 }
+
+// data-test-selector="prediction-checkout-active-footer__input-type-toggle"
+// document.querySelectorAll('[class="ScInputBase-sc-1wz0osy-0 ScInput-sc-m6vr9t-0 fIywXv ewQTzt InjectLayout-sc-588ddc-0 iDxwbK tw-input"]')[0].value
+// document.querySelectorAll('.CoreText-sc-cpl358-0.kCKrpd')
