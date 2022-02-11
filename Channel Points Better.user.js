@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.3.0
+// @version 1.1.3.1
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
