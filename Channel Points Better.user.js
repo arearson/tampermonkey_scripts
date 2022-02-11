@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.1.3
+// @version 1.1.2.0
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -33,43 +33,42 @@ let observer = new MutationObserver(() => {
 
     let bonus = document.querySelector(predictButton);
     if (bonus && !claiming) {
-
-        claiming = true;
         if (bonus.textContent !== 'Predict') {
-            claiming = false;
             observer.observe(document.body, {childList: true, subtree: true});
-            return;
-        }
-        bonus.click();
-        let leftValue = document.querySelector('.prediction-summary-stat__value--left');
-        let rightValue = document.querySelector('.prediction-summary-stat__value--right');
-        if (!leftValue || !rightValue) {
-            window.location.reload();
-        }
-        let blue = converter(leftValue.textContent);
-        let red = converter(rightValue.textContent);
-        // console.log(blue, red);
-        let dateNow = new Date();
-        // Betting Controls
-        let blueBet = document.querySelector('.fixed-prediction-button--blue');
-        let redBet = document.querySelector('.fixed-prediction-button--pink');
-        if (redBet && blueBet) {
-            console.log('Waiting for initial votes @', dateNow);
-            setTimeout(() => {
-                bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
-                dateNow = new Date();
-                console.log(curPoints, '@', dateNow);
-                claiming = false;
-                observer.observe(document.body, {childList: true, subtree: true});
-            }, 20 * 1000);
         } else {
-            setTimeout(() => {
-                bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
-                dateNow = new Date();
-                console.log(curPoints, '@', dateNow);
-                claiming = false;
-                observer.observe(document.body, {childList: true, subtree: true});
-            }, (Math.random() * (2 - .5) + .5) * 1000);
+            claiming = true;
+            bonus.click();
+            let leftValue = document.querySelector('.prediction-summary-stat__value--left');
+            let rightValue = document.querySelector('.prediction-summary-stat__value--right');
+            if (!leftValue || !rightValue) {
+                window.location.reload();
+                return;
+            }
+            let blue = converter(leftValue.textContent);
+            let red = converter(rightValue.textContent);
+            // console.log(blue, red);
+            let dateNow = new Date();
+            // Betting Controls
+            let blueBet = document.querySelector('.fixed-prediction-button--blue');
+            let redBet = document.querySelector('.fixed-prediction-button--pink');
+            if (redBet && blueBet) {
+                console.log('Waiting for initial votes @', dateNow);
+                setTimeout(() => {
+                    bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+                    dateNow = new Date();
+                    console.log(curPoints, '@', dateNow);
+                    claiming = false;
+                    observer.observe(document.body, {childList: true, subtree: true});
+                }, 20 * 1000);
+            } else {
+                setTimeout(() => {
+                    bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+                    dateNow = new Date();
+                    console.log(curPoints, '@', dateNow);
+                    claiming = false;
+                    observer.observe(document.body, {childList: true, subtree: true});
+                }, (Math.random() * (1.5 - .5) + .5) * 1000);
+            }
         }
     }
 });
