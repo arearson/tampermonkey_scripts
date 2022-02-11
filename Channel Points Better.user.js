@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.2.0
+// @version 1.1.3.0
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -11,6 +11,7 @@
 // @icon https://blog.twitch.tv/assets/uploads/1306x700-blog-header--channel-points-predictions.jpg
 // ==/UserScript==
 
+"use strict";
 let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 let claiming = false;
 let predictButton = '[data-test-selector="community-prediction-highlight-header__action-button"]';
@@ -54,15 +55,22 @@ let observer = new MutationObserver(() => {
             if (redBet && blueBet) {
                 console.log('Waiting for initial votes @', dateNow);
                 setTimeout(() => {
+                    leftValue = document.querySelector('.prediction-summary-stat__value--left');
+                    rightValue = document.querySelector('.prediction-summary-stat__value--right');
+                    blue = converter(leftValue.textContent);
+                    red = converter(rightValue.textContent);
+                    curPoints = converter(document.querySelector(pointsButton));
+
                     bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+
                     dateNow = new Date();
                     console.log(curPoints, '@', dateNow);
                     claiming = false;
                     observer.observe(document.body, {childList: true, subtree: true});
-                }, 20 * 1000);
+                }, 10 * 1000);
             } else {
+                bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
                 setTimeout(() => {
-                    bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
                     dateNow = new Date();
                     console.log(curPoints, '@', dateNow);
                     claiming = false;
