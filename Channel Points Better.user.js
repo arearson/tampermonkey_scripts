@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.1.1
+// @version 1.1.1.2
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -68,7 +68,7 @@ let observer = new MutationObserver(() => {
             console.log(curPoints, '@', dateNow);
             claiming = false;
             observer.observe(document.body, {childList: true, subtree: true});
-        }, (Math.random() * (.5 - 2) + .5) * 1000);
+        }, (Math.random() * (2 - .5) + .5) * 1000);
     }
 });
 
