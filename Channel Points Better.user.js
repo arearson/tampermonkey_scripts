@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.1.2
+// @version 1.1.1.3
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -57,18 +57,20 @@ let observer = new MutationObserver(() => {
             console.log('Waiting for initial votes @', dateNow);
             setTimeout(() => {
                 bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+                dateNow = new Date();
+                console.log(curPoints, '@', dateNow);
+                claiming = false;
+                observer.observe(document.body, {childList: true, subtree: true});
             }, 20 * 1000);
         } else {
-            bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+            setTimeout(() => {
+                bettingLogic(red, blue, redBet, blueBet, bonus, curPoints);
+                dateNow = new Date();
+                console.log(curPoints, '@', dateNow);
+                claiming = false;
+                observer.observe(document.body, {childList: true, subtree: true});
+            }, (Math.random() * (2 - .5) + .5) * 1000);
         }
-
-        // Hold from spamming the button
-        setTimeout(() => {
-            dateNow = new Date();
-            console.log(curPoints, '@', dateNow);
-            claiming = false;
-            observer.observe(document.body, {childList: true, subtree: true});
-        }, (Math.random() * (2 - .5) + .5) * 1000);
     }
 });
 
