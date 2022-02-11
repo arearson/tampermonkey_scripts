@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         eSports Refresh
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/arearson/tampermonkey_scripts/
 // @version      0.3
 // @description  refreshes LOLesports website to maximize rewards
 // @author       You
