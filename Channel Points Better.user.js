@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.1.0
+// @version 1.1.1.1
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
 // @match https://dashboard.twitch.tv/*
 // @license MIT
 // @grant none
-// @namespace http://tampermonkey.net/
+// @namespace https://github.com/arearson/tampermonkey_scripts/
 // @icon https://blog.twitch.tv/assets/uploads/1306x700-blog-header--channel-points-predictions.jpg
 // ==/UserScript==
 
