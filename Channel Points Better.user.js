@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.3.2
+// @version 1.1.3.3
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -10,7 +10,7 @@
 // @namespace https://github.com/arearson/tampermonkey_scripts/
 // @icon https://blog.twitch.tv/assets/uploads/1306x700-blog-header--channel-points-predictions.jpg
 // ==/UserScript==
-
+"use strict";
 let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 let claiming = false;
 let predictButton = '[data-test-selector="community-prediction-highlight-header__action-button"]';
@@ -22,7 +22,7 @@ let observer = new MutationObserver(() => {
     let curPoints = document.querySelector(pointsButton);
     let bonus = document.querySelector(predictButton);
     if (bonus && !claiming && curPoints) {
-        let curPointsValue = converter(curPoints.textContent);
+        let curPointsValue = createIntFromSimpStr(curPoints.textContent);
         if (bonus.textContent !== 'Predict' || curPointsValue === 0) {
             observer.observe(document.body, {childList: true, subtree: true});
         } else {
@@ -42,9 +42,9 @@ let observer = new MutationObserver(() => {
                     setTimeout(() => {
                         leftValue = document.querySelector('.prediction-summary-stat__value--left');
                         rightValue = document.querySelector('.prediction-summary-stat__value--right');
-                        let blue = converter(leftValue.textContent);
-                        let red = converter(rightValue.textContent);
-                        curPointsValue = converter(document.querySelector(pointsButton));
+                        let blue = createIntFromSimpStr(leftValue.textContent);
+                        let red = createIntFromSimpStr(rightValue.textContent);
+                        curPointsValue = createIntFromSimpStr(document.querySelector(pointsButton).textContent);
                         bettingLogic(red, blue, redBet, blueBet, bonus, curPointsValue);
                         let dateNow = new Date();
                         console.log(curPointsValue, '@', dateNow);
@@ -53,8 +53,8 @@ let observer = new MutationObserver(() => {
                     }, 10 * 1000);
 
                 } else {
-                    let blue = converter(leftValue.textContent);
-                    let red = converter(rightValue.textContent);
+                    let blue = createIntFromSimpStr(leftValue.textContent);
+                    let red = createIntFromSimpStr(rightValue.textContent);
                     bettingLogic(red, blue, redBet, blueBet, bonus, curPointsValue);
                     setTimeout(() => {
                         let dateNow = new Date();
@@ -76,7 +76,8 @@ setInterval(function () {
     window.location.reload();
 }, (Math.random() * (30 - 15) + 15) * 60000);
 
-function converter(value) {
+function createIntFromSimpStr(value) {
+    if(!value) return 0;
     let last = value.charAt(value.length - 1);
     if (last === 'K') return (parseInt(value) * 1000).toFixed();
     else if (last === 'M') return (parseInt(value) * 1000000).toFixed();
