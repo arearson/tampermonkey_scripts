@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Channel Points Better
-// @version 1.1.3.3
+// @version 1.1.3.4
 // @author You
 // @description Automatically bet channel points.
 // @match https://www.twitch.tv/*
@@ -42,9 +42,9 @@ let observer = new MutationObserver(() => {
                     setTimeout(() => {
                         leftValue = document.querySelector('.prediction-summary-stat__value--left');
                         rightValue = document.querySelector('.prediction-summary-stat__value--right');
-                        let blue = createIntFromSimpStr(leftValue.textContent);
-                        let red = createIntFromSimpStr(rightValue.textContent);
-                        curPointsValue = createIntFromSimpStr(document.querySelector(pointsButton).textContent);
+                        let blue = createIntFromSimpStr(leftValue ? leftValue.textContent : '0');
+                        let red = createIntFromSimpStr(rightValue ? rightValue.textContent : '0');
+                        curPointsValue = createIntFromSimpStr(document.querySelector(pointsButton) ? document.querySelector(pointsButton).textContent : "0");
                         bettingLogic(red, blue, redBet, blueBet, bonus, curPointsValue);
                         let dateNow = new Date();
                         console.log(curPointsValue, '@', dateNow);
@@ -53,8 +53,8 @@ let observer = new MutationObserver(() => {
                     }, 10 * 1000);
 
                 } else {
-                    let blue = createIntFromSimpStr(leftValue.textContent);
-                    let red = createIntFromSimpStr(rightValue.textContent);
+                    let blue = createIntFromSimpStr(leftValue ? leftValue.textContent : '0');
+                    let red = createIntFromSimpStr(rightValue ? rightValue.textContent : '0');
                     bettingLogic(red, blue, redBet, blueBet, bonus, curPointsValue);
                     setTimeout(() => {
                         let dateNow = new Date();
@@ -77,7 +77,7 @@ setInterval(function () {
 }, (Math.random() * (30 - 15) + 15) * 60000);
 
 function createIntFromSimpStr(value) {
-    if(!value) return 0;
+    if (!value) return 0;
     let last = value.charAt(value.length - 1);
     if (last === 'K') return (parseInt(value) * 1000).toFixed();
     else if (last === 'M') return (parseInt(value) * 1000000).toFixed();
