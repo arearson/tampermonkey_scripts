@@ -85,10 +85,9 @@ function createIntFromSimpStr(value) {
 }
 
 function bettingLogic(r, b, rb, bb, bo, cp) {
-    if (b === r) {
-    } else if (b > r && rb) {
+    if (b > r && rb) {
         rb.click();
-    } else if (bb && r > b) {
+    } else if (bb && r >= b) {
         bb.click();
     } else if (rb && !bb) {
         rb.click();
